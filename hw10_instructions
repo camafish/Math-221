@@ -1,0 +1,165 @@
+MATH 221 Spring 2016
+
+Homework 10
+Due: Friday, April 15th
+
+Exercise ==> In a file named turtle.go develop a representation for a
+turtle object represented as a Go struct. A turtle lives on a
+two-dimensional grid, sitting at a position (x,y), a pair of integer
+coordinates, facing either north, south, east, or west. It can move
+forward in the direction it is facing, which increases or decreases
+one of its position's coordinates by 1. For example, if it is facing
+east, its x coordinate increases by 1. It can turn left 90 degrees,
+and right 90 degrees. 
+
+In addition to its two coordinates and its direction, each turtle has
+a name.
+
+Represent a turtle by using a struct with four fields: 'name', 'x',
+'y', 'facing'. The values 'x' and 'y' are the turtle's coordinates
+and should be integers.  The 'facing' entry should be a string,
+one of "N", "S", "E", or 'W'. Write these functions that work with 
+turtle structs:
+
+FUNCTIONS
+
+1. func makeTurtle(s string) turtle
+
+Makes a turtle struct named with the string s. It should be placed 
+at the grid's origin, facing east. This should just return a turtle
+with its four fields set appropriately.  To make a new turtle
+struct you use syntax like
+     turtle{name:..., x:..., y:..., facing:...}
+You can see similar code in my vector example.
+
+
+2. func right(t *turtle)
+
+Modifies the turtle t so that it turns 90 degrees clockwise.  To
+modify the contents of t, in this case its 'facing' field, you can 
+directly assign it with a statement like
+    t.facing = ...
+Note that, for this change to 't' to have effect on the code that
+calls 'right', the turtle nees to be passed by reference.  Code like
+    var p turtle = makeTurtle("pat")
+    right(&p)
+does that by using the "pass the variable by reference" ('&') 
+annotation.
+
+
+3. func forward(t *turtle)
+
+Modifies the turtle t so that it moves forward one grid unit.
+
+
+4. func left(t *turtle)
+
+Modifies the turtle t so that it turns 90 degrees counterclockwise.
+
+
+5. func toString(t turtle) string
+
+Returns a string representation of t. Have it give the name, the 
+coordinates, and the facing direction as a string.  For example
+the code fragment in #2 above, when followed with
+    var s = toString(p)
+could set s to the string
+    "{ turtle 'pat' at (0,0) heading E }"
+and then you could use the formatted printing instruction
+    fmt.Println(s)
+to report the turtle's situation.
+
+
+TESTING
+
+You should test your struct and functions with a 'main' function that
+makes some turtles, moves them around, and reports where they are
+at.  For example, the code
+
+  func main() {
+    var p turtle
+    p = makeTurtle("pat")
+    fmt.Println(toString(p))
+    left(&p)
+    forward(&p)
+    forward(&p)
+    fmt.Println(toString(p))
+    right(&p)
+    forward(&p)
+    fmt.Println(toString(p))
+  }
+
+should lead to the following output:
+
+{ turtle 'pat' at (0,0) heading E }
+{ turtle 'pat' at (0,2) heading N }
+{ turtle 'pat' at (1,2) heading E }
+
+
+Exercise => The Go source code llist.go contains 
+code for a pointer- and struct-based implementation 
+of a linked list.  It uses two struct types: a 
+'node' struct that is similar to the linked list 
+node objects you've seen in MATH 121, and a 'llist' 
+struct that knows about the first node in its 
+linked list.
+
+The difference here (from Python) is that we use 
+pointers to explicitly "link" nodes together.  
+The 'node' struct has a 'next' field that is of 
+type '*node".  This field is a reference to 
+another 'node' struct.  That reference will be 
+'nil' if the node is the last node in its linked 
+list.
+
+Your job is to complete the code for linked list 
+methods 'length', 'itemAt', and 'insertInOrder'.  
+See their partial definitions in the llist.go
+file, along with the comments explaining their
+implementation. You should probablu look at
+my other method implementations to help you 
+write your code. Add test code to 'main' to
+convince yourself (and me) that your new methods
+are correct.
+
+
+Exercise ==> The Go source code listML.go provides an
+alternative implementation of an integer sequence using 
+ideas we learned in Standard ML. It implements an 'intlist' 
+datatype as a Go "interface". It is, using Go structs, 
+mimicking the ML datatype definition:
+
+ datatype intlist = empty of unit | cons of int * intlist
+
+An 'intlist', then, is just an unordered sequence of 
+integers.
+
+It implements 'intlist' by giving the definitions of two 
+struct types 'empty' and 'cons'.  A 'cons' struct has 
+'head' and 'tail' fields, and an 'empty' struct that has 
+no fields.
+
+In the code below the struct declarations, I define a
+series of "methods" that apply to structs of type 'cons'
+and of type 'empty'.  These are declared just as functions
+are, but they also include a name and type of the "receiver"
+of the method's message.  The receiver appears just between
+"func" and the name of the method.  For example
+
+   func (self cons) contains(k int) bool { ... }
+
+defines a method 'contains' for "cons' structs, one that
+takes an integer parameter 'k' and returns a boolean 
+value (true or false).  Within the code for 'contains'
+I use the name 'self' to refer to the receiver, a struct
+of type 'cons'.
+
+To make both structs act like 'list', Go needs us to write 
+code for the 8 methods that are described in the 'list'
+interface declaration.  We have done that, except for two
+of them, the code is wrong/incomplete: the code for 
+'itemAt' and the code for 'insertInOrder'.
+
+Complete their code, mimicking the code I wrote for the 
+other methods.  Add tests for them to the function 'main'
+below.
